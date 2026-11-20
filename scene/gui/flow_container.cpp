@@ -375,9 +375,13 @@ void FlowContainer::_resort() {
 
 		child_idx_in_line++;
 	}
+	const int old_cached_line_count = cached_line_count;
 	cached_size = (vertical ? ofs.x : ofs.y) + line_height;
 	cached_line_count = lines_data.size();
 	cached_line_max_child_count = lines_data.size() > 0 ? lines_data[0].child_count : 0;
+	if (old_cached_line_count != cached_line_count) {
+		emit_signal(SNAME("line_count_changed")); // EDIT: nevermind this can cause an infinite loop if anything bound to it triggers a _resort, avoiding this is not trivial so I'm dropping this PR
+	}
 }
 
 Size2 FlowContainer::_get_minimum_size(bool p_use_desired_sizes) const {
@@ -548,6 +552,8 @@ void FlowContainer::_bind_methods() {
 	BIND_ENUM_CONSTANT(LAST_WRAP_ALIGNMENT_BEGIN);
 	BIND_ENUM_CONSTANT(LAST_WRAP_ALIGNMENT_CENTER);
 	BIND_ENUM_CONSTANT(LAST_WRAP_ALIGNMENT_END);
+
+	ADD_SIGNAL(MethodInfo("line_count_changed"));
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "alignment", PROPERTY_HINT_ENUM, "Begin,Center,End"), "set_alignment", "get_alignment");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "last_wrap_alignment", PROPERTY_HINT_ENUM, "Inherit,Begin,Center,End"), "set_last_wrap_alignment", "get_last_wrap_alignment");

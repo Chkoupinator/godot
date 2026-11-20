@@ -33,6 +33,13 @@
 			Can't be changed when using [HFlowContainer] and [VFlowContainer].
 		</member>
 	</members>
+	<signals>
+		<signal name="line_count_changed">
+			<description>
+				Emitted when the line count changes after child controls were rearranged by this [FlowContainer].
+			</description>
+		</signal>
+	</signals>
 	<constants>
 		<constant name="ALIGNMENT_BEGIN" value="0" enum="AlignmentMode">
 			The child controls will be arranged at the beginning of the container, i.e. top if orientation is vertical, left if orientation is horizontal (right for RTL layout).
